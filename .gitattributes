@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+# Tệp nhị phân: không đổi xuống dòng
+*.webp binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary

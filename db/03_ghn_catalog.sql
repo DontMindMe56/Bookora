@@ -1,0 +1,10 @@
+USE bookstore;
+CREATE TABLE IF NOT EXISTS GhnProvince (
+  provinceId INT NOT NULL, name VARCHAR(150) NOT NULL, active BOOLEAN NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (provinceId)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS GhnDistrict (
+  districtId INT NOT NULL, provinceId INT NOT NULL, name VARCHAR(150) NOT NULL, active BOOLEAN NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (districtId), KEY ix_gd_province (provinceId)) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS GhnWard (
+  districtId INT NOT NULL, wardCode VARCHAR(20) NOT NULL, name VARCHAR(150) NOT NULL, active BOOLEAN NOT NULL DEFAULT TRUE,
+  PRIMARY KEY (districtId, wardCode)) ENGINE=InnoDB;

@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bookstore-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: UTC
+    ports: ["3307:3306"]
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+    volumes:
+      - ./01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./02_seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+      - ./03_ghn_catalog.sql:/docker-entrypoint-initdb.d/03_ghn_catalog.sql:ro
+      - ./04_promotion_price_source.sql:/docker-entrypoint-initdb.d/04_promotion_price_source.sql:ro
+      - ./05_review.sql:/docker-entrypoint-initdb.d/05_review.sql:ro
+      - ./06_exception_ghn_lost.sql:/docker-entrypoint-initdb.d/06_exception_ghn_lost.sql:ro
+      - ./07_facebook_login.sql:/docker-entrypoint-initdb.d/07_facebook_login.sql:ro
+      - ./08_exception_ghn_cancelled.sql:/docker-entrypoint-initdb.d/08_exception_ghn_cancelled.sql:ro
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:

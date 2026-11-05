@@ -1,0 +1,4 @@
+USE bookstore;
+SET @c = (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='Edition' AND COLUMN_NAME='salePromotionId');
+SET @s = IF(@c = 0, 'ALTER TABLE Edition ADD COLUMN salePromotionId CHAR(36) NULL', 'SELECT 1');
+PREPARE st FROM @s; EXECUTE st; DEALLOCATE PREPARE st;
