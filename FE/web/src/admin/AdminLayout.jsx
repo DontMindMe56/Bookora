@@ -9,12 +9,20 @@ export default function AdminLayout() {
     <>
       <div className="bar" style={{ borderBottom: '1px solid #e6e1d8', marginBottom: 16, padding: 0, paddingBottom: 10 }}>
         <b className="logo">Quản trị</b>
-        <NavLink to="/admin" end>Đơn hàng</NavLink>
+        {role === 'ADMIN' && <NavLink to="/admin/customers">Khách hàng</NavLink>}
+        {role === 'ADMIN' && <NavLink to="/admin/staffs">Nhân Sự</NavLink>}
+        <NavLink to="/admin" end>
+          Đơn hàng
+        </NavLink>
         {role === 'ADMIN' && <NavLink to="/admin/reports">Báo cáo</NavLink>}
+        {role === 'ADMIN' && <NavLink to="/admin/parameters">Tham số hệ thống</NavLink>}
+        {role === 'ADMIN' && <NavLink to="/admin/logs">Logs</NavLink>}
         <span style={{ flex: 1 }} />
         <span className="mut">{role}</span>
         <NavLink to="/">Cửa hàng</NavLink>
-        <button className="ghost" onClick={() => (setToken(null), nav('/admin/login'))}>Đăng xuất</button>
+        <button className="ghost" onClick={() => (setToken(null), nav('/admin/login'))}>
+          Đăng xuất
+        </button>
       </div>
       <Outlet />
     </>
