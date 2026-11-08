@@ -136,9 +136,7 @@ export default function AdminStaff() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Users className="w-6 h-6 text-blue-600" /> Quản Lý Nhân Sự
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">Quản Lý Nhân Sự</h1>
         </div>
         <div className="flex items-center gap-2">
           <button

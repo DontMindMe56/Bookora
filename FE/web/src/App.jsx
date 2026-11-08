@@ -18,6 +18,7 @@ import { AdminSystemParameter } from './admin/AdminSystemParameter';
 import { AdminCustomers } from './admin/AdminCustomers';
 import AdminStaffs from './admin/AdminStaffs';
 import AdminAuditLogs from './admin/AdminAuditLogs';
+import UserProfile from './pages/UserProfile';
 
 function Private({ children }) {
   const token = useStore((s) => s.token);
@@ -48,10 +49,19 @@ function Header() {
             Đơn hàng
           </Link>
         )}
-        {['STAFF', 'ADMIN'].includes(role) && <Link to="/admin">Quản trị</Link>}
+        {['STAFF', 'ADMIN'].includes(role) && (
+          <Link to="/admin" className="btn ghost">
+            Quản trị
+          </Link>
+        )}
         {!['STAFF', 'ADMIN'].includes(role) && (
           <Link to="/cart" className="btn ghost">
             Giỏ hàng ({cartCount})
+          </Link>
+        )}
+        {token && (
+          <Link to="/profile" className="btn ghost">
+            Tài khoản
           </Link>
         )}
         {token ? (
@@ -89,6 +99,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/book/:id" element={<Book />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<UserProfile />} />
+
           <Route path="/login" element={<Login />} />
           <Route
             path="/checkout"
