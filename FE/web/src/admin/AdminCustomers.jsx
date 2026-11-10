@@ -123,11 +123,7 @@ export const AdminCustomers = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Quản Lý Khách Hàng</h1>
         </div>
-        <button
-          onClick={fetchCustomers}
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border flex items-center gap-2 self-start"
-          title="Tải lại"
-        >
+        <button onClick={fetchCustomers} className="p-2 bg-primary text-white rounded-lg border flex items-center gap-2 self-start" title="Tải lại">
           <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
@@ -171,7 +167,7 @@ export const AdminCustomers = () => {
           <option value="UNVERIFIED">Chưa xác thực (UNVERIFIED)</option>
         </select>
 
-        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+        <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
           Tìm kiếm
         </button>
       </form>

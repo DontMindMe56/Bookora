@@ -25,9 +25,22 @@ export default function Login() {
       <form onSubmit={submit}>
         <h2>Đăng nhập</h2>
         {err && <div className="err">{err}</div>}
-        <div className="f"><label>Email</label><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-        <div className="f"><label>Mật khẩu</label><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
-        <button>Đăng nhập</button>
+        <div className="f">
+          <label>Email</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div className="f">
+          <label>Mật khẩu</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <div className="f">
+          <button type="submit" className="btn">
+            Đăng nhập
+          </button>
+          <button type="button" className="btn" onClick={() => nav('/register')}>
+            Đăng ký
+          </button>
+        </div>
         <p className="mut">Demo: khach1@demo.vn / Demo12345</p>
       </form>
       <SocialLogin onLogin={done} onError={fail} />

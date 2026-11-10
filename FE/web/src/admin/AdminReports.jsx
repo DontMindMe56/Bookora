@@ -64,11 +64,7 @@ export default function AdminReports() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">Báo Cáo & Thống Kê</h1>
         </div>
-        <button
-          onClick={fetchReports}
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border flex items-center gap-2 self-start text-sm"
-          title="Tải lại"
-        >
+        <button onClick={fetchReports} className="p-2 bg-primary text-white rounded-lg border flex items-center gap-2 self-start text-sm" title="Tải lại">
           <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>

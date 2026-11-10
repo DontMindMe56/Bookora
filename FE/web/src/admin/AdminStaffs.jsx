@@ -36,7 +36,6 @@ export default function AdminStaff() {
 
       let items = data.items || data.data || (Array.isArray(data) ? data : []);
 
-      // Dự phòng trường hợp Backend chưa lọc trực tiếp qua query, ta lọc ở frontend
       if (roleFilter) {
         items = items.filter((s) => s.role === roleFilter);
       }
@@ -95,7 +94,7 @@ export default function AdminStaff() {
     try {
       if (editingStaff) {
         await api(`/api/admin/staff/${editingStaff.staffId}`, {
-          method: 'PUT',
+          method: 'PATCH',
           body: {
             fullName: formData.fullName,
             phone: formData.phone,
@@ -124,7 +123,7 @@ export default function AdminStaff() {
   const handleResendLink = async (staffId) => {
     if (!confirm('Bạn có muốn gửi lại đường dẫn thiết lập mật khẩu cho nhân viên này?')) return;
     try {
-      await api(`/api/admin/staff/${staffId}/resend-link`, { method: 'POST' });
+      await api(`/api/admin/staff/${staffId}/resend-password-link`, { method: 'POST' });
       toast.success('Đã gửi lại đường dẫn thiết lập mật khẩu qua email');
     } catch (err) {
       toast.error(err.message || 'Không thể gửi lại đường dẫn');
@@ -139,18 +138,11 @@ export default function AdminStaff() {
           <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">Quản Lý Nhân Sự</h1>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={fetchStaff}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border flex items-center gap-2 text-sm"
-            title="Tải lại"
-          >
+          <button onClick={fetchStaff} className="p-2 bg-primary text-white rounded-lg border flex items-center gap-2 text-sm" title="Tải lại">
             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
           </button>
 
-          <button
-            onClick={() => handleOpenModal(null)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-2"
-          >
+          <button onClick={() => handleOpenModal(null)} className="px-4 py-2 bg-primary text-white text-sm font-medium flex items-center gap-2 rounded-lg">
             <div className="flex items-center gap-1">
               <Plus className="w-4 h-4" />
               <span>Thêm nhân viên</span>
@@ -185,7 +177,7 @@ export default function AdminStaff() {
           <option value="STAFF">Nhân viên (STAFF)</option>
         </select>
 
-        <button type="submit" className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-medium">
+        <button type="submit" className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium">
           Tìm kiếm
         </button>
       </form>

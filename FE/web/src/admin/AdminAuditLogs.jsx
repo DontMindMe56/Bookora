@@ -72,7 +72,7 @@ export default function AdminAuditLogs() {
         </div>
         <button
           onClick={fetchAuditLogs}
-          className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border flex items-center gap-2 text-sm font-medium self-start"
+          className="px-3 py-2 bg-primary text-white rounded-lg border flex items-center gap-2 text-sm font-medium self-start"
           title="Tải lại"
         >
           <div className="flex items-center gap-1">

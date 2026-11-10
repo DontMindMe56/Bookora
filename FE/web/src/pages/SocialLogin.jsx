@@ -17,7 +17,10 @@ export default function SocialLogin({ onLogin, onError }) {
 
   const facebook = () =>
     window.FB
-      ? window.FB.login((r) => (r.authResponse ? send('/api/auth/facebook', { accessToken: r.authResponse.accessToken }) : onError(new Error('Đã hủy đăng nhập Facebook'))), { scope: 'public_profile,email' })
+      ? window.FB.login(
+          (r) => (r.authResponse ? send('/api/auth/facebook', { accessToken: r.authResponse.accessToken }) : onError(new Error('Đã hủy đăng nhập Facebook'))),
+          { scope: 'public_profile,email' },
+        )
       : onError(new Error('Chưa tải được Facebook SDK'));
 
   if (!cfg) return null;
@@ -26,15 +29,32 @@ export default function SocialLogin({ onLogin, onError }) {
       <span className="mut">hoặc</span>
       {cfg.googleClientId ? (
         <GoogleOAuthProvider clientId={cfg.googleClientId}>
-          <GoogleLogin locale="vi" onSuccess={(c) => send('/api/auth/google', { idToken: c.credential })} onError={() => onError(new Error('Đăng nhập Google thất bại'))} />
+          <GoogleLogin
+            locale="vi"
+            onSuccess={(c) => send('/api/auth/google', { idToken: c.credential })}
+            onError={() => onError(new Error('Đăng nhập Google thất bại'))}
+          />
         </GoogleOAuthProvider>
       ) : (
-        <button type="button" className="ghost" disabled style={{ width: 240 }} title="Thiếu GOOGLE_CLIENT_ID trong BE/.env">Đăng nhập bằng Google</button>
+        <button type="button" className="ghost" disabled style={{ width: 240 }} title="Thiếu GOOGLE_CLIENT_ID trong BE/.env">
+          Đăng nhập bằng Google
+        </button>
       )}
-      <button type="button" disabled={!cfg.facebookAppId} onClick={facebook} style={{ background: '#1877f2', width: 240 }} title={cfg.facebookAppId ? '' : 'Thiếu FACEBOOK_APP_ID trong BE/.env'}>
+      <button
+        type="button"
+        className="btn"
+        disabled={!cfg.facebookAppId}
+        onClick={facebook}
+        style={{ background: '#1877f2', width: 240 }}
+        title={cfg.facebookAppId ? '' : 'Thiếu FACEBOOK_APP_ID trong BE/.env'}
+      >
         Đăng nhập bằng Facebook
       </button>
-      {(!cfg.googleClientId || !cfg.facebookAppId) && <span className="mut">Chưa cấu hình trong BE/.env: {[!cfg.googleClientId && 'GOOGLE_CLIENT_ID', !cfg.facebookAppId && 'FACEBOOK_APP_ID'].filter(Boolean).join(', ')}</span>}
+      {(!cfg.googleClientId || !cfg.facebookAppId) && (
+        <span className="mut">
+          Chưa cấu hình trong BE/.env: {[!cfg.googleClientId && 'GOOGLE_CLIENT_ID', !cfg.facebookAppId && 'FACEBOOK_APP_ID'].filter(Boolean).join(', ')}
+        </span>
+      )}
     </div>
   );
 }

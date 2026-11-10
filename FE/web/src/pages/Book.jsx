@@ -123,7 +123,7 @@ export default function Book() {
             <button
               disabled={!e.canBuy || loading}
               onClick={() => add(false)}
-              className="flex-1 min-w-40 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+              className="flex-1 min-w-40 px-5 py-2.5 bg-primary disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-5 h-5" />
               <span>Thêm vào giỏ</span>
@@ -132,7 +132,7 @@ export default function Book() {
             <button
               disabled={!e.canBuy || loading}
               onClick={() => add(true)}
-              className="flex-1 min-w-35 px-5 py-2.5 bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed text-blue-600 border border-blue-600 text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+              className="flex-1 min-w-35 px-5 py-2.5 bg-primary disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
             >
               <Zap className="w-5 h-5" />
               <span>Mua ngay</span>

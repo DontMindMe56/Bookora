@@ -90,11 +90,7 @@ export default function AdminOrderDetail() {
             Chi Tiết Đơn Hàng <span className="font-mono">#{o.orderCode}</span>
           </h1>
         </div>
-        <button
-          onClick={load}
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border flex items-center gap-2 self-start text-sm"
-          title="Tải lại"
-        >
+        <button onClick={load} className="p-2 bg-primary text-white rounded-lg border flex items-center gap-2 self-start text-sm" title="Tải lại">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>

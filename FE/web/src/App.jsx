@@ -19,6 +19,9 @@ import { AdminCustomers } from './admin/AdminCustomers';
 import AdminStaffs from './admin/AdminStaffs';
 import AdminAuditLogs from './admin/AdminAuditLogs';
 import UserProfile from './pages/UserProfile';
+import AdminBooks from './admin/AdminBooks';
+import Register from './pages/Register';
+import TermsAndPrivacy from './pages/TermsAndPrivacy';
 
 function Private({ children }) {
   const token = useStore((s) => s.token);
@@ -42,7 +45,7 @@ function Header() {
         </Link>
         <form onSubmit={search}>
           <input name="q" placeholder="Tìm sách, tác giả…" />
-          <button>Tìm</button>
+          <button className="btn">Tìm</button>
         </form>
         {!['STAFF', 'ADMIN'].includes(role) && (
           <Link to="/orders" className="btn ghost">
@@ -65,7 +68,7 @@ function Header() {
           </Link>
         )}
         {token ? (
-          <button className="ghost" onClick={() => (setToken(null), nav('/'))}>
+          <button className="btn ghost" onClick={() => (setToken(null), nav('/'))}>
             Đăng xuất
           </button>
         ) : (
@@ -87,7 +90,8 @@ export default function App() {
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminOrders />} />
+            <Route index element={<AdminReports />} />
+            <Route path="books" element={<AdminBooks />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="staffs" element={<AdminStaffs />} />
             <Route path="orders" element={<AdminOrders />} />
@@ -102,6 +106,9 @@ export default function App() {
           <Route path="/profile" element={<UserProfile />} />
 
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/terms-and-privacy" element={<TermsAndPrivacy />} />
+
           <Route
             path="/checkout"
             element={

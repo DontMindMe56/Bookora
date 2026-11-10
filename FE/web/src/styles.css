@@ -11,27 +11,26 @@ body {
   background: #faf8f4;
   color: #222;
 }
-a {
-  color: inherit;
-  text-decoration: none;
-}
 button,
 input,
 select,
 textarea {
   font: inherit;
 }
-button,
 .btn {
   background: #b4442f;
   color: #fff;
+  font-weight: bold;
   border: 0;
   padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
   display: inline-block;
 }
-button:disabled {
+.bg-primary {
+  background: #b4442f;
+}
+.btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

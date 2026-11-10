@@ -18,13 +18,6 @@ export default function UserProfile() {
     gender: '',
   });
 
-  // Form state cho đổi mật khẩu
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-
   // Tải thông tin tài khoản hiện tại từ API
   const fetchProfile = async () => {
     setLoading(true);
@@ -74,24 +67,23 @@ export default function UserProfile() {
   // Xử lý đổi mật khẩu
   const handleChangePassword = async (e) => {
     e.preventDefault();
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('Mật khẩu mới không khớp!');
+
+    const userEmail = profileData?.email;
+    if (!userEmail) {
+      toast.error('Không tìm thấy thông tin email của tài khoản.');
       return;
     }
 
     setChangingPassword(true);
     try {
-      await api('/api/auth/change-password', {
+      // Gọi đúng route POST /api/auth/forgot-password từ router backend
+      await api('/api/auth/forgot-password', {
         method: 'POST',
-        body: {
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword,
-        },
+        body: { email: userEmail },
       });
-      toast.success('Đổi mật khẩu thành công! Vui lòng đăng nhập lại.');
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      toast.success('Đã gửi liên kết đặt lại mật khẩu tới email của bạn. Vui lòng kiểm tra hộp thư!');
     } catch (err) {
-      toast.error(err.message || 'Đổi mật khẩu thất bại');
+      toast.error(err.message || 'Không thể gửi yêu cầu đặt lại mật khẩu');
     } finally {
       setChangingPassword(false);
     }
@@ -100,40 +92,26 @@ export default function UserProfile() {
   // Hàm xử lý Xóa dữ liệu / Xóa tài khoản vĩnh viễn (Dành riêng cho Customer)
   // Chưa hoàn thành
   const handleDeleteAccount = async () => {
-    // Hàm xử lý Xóa dữ liệu / Xóa tài khoản vĩnh viễn (Yêu cầu nhập mật khẩu)
-    const handleDeleteAccount = async () => {
-      const password = window.prompt(
-        'HÀNH ĐỘNG NGUY HIỂM: Thao tác này sẽ xóa vĩnh viễn toàn bộ dữ liệu và lịch sử của bạn. Nhập mật khẩu tài khoản để xác nhận:',
-      );
-      if (password === null) return;
-      if (!password.trim()) {
-        toast.error('Vui lòng nhập mật khẩu để xác nhận.');
-        return;
-      }
-
-      setActionLoading(true);
-      try {
-        // Gửi mật khẩu lên backend để xác thực quyền chủ sở hữu trước khi xóa
-        await api('/api/auth/account', {
-          method: 'DELETE',
-          body: { password },
-        });
-        toast.success('Đã xóa tài khoản thành công.');
-        nav('/');
-      } catch (err) {
-        toast.error(err.message || 'Mật khẩu không chính xác hoặc không thể xóa tài khoản');
-      } finally {
-        setActionLoading(false);
-      }
-    };
+    const password = window.prompt(
+      'HÀNH ĐỘNG NGUY HIỂM: Thao tác này sẽ xóa vĩnh viễn toàn bộ dữ liệu và lịch sử của bạn. Nhập mật khẩu tài khoản để xác nhận:',
+    );
+    if (password === null) return;
+    if (!password.trim()) {
+      toast.error('Vui lòng nhập mật khẩu để xác nhận.');
+      return;
+    }
 
     setActionLoading(true);
     try {
-      await api('/api/auth/account', { method: 'DELETE' });
+      // Gửi mật khẩu lên backend để xác thực quyền chủ sở hữu trước khi xóa
+      await api('/api/auth/account', {
+        method: 'DELETE',
+        body: { password },
+      });
       toast.success('Đã xóa tài khoản thành công.');
       nav('/');
     } catch (err) {
-      toast.error(err.message || 'Không thể xóa tài khoản');
+      toast.error(err.message || 'Mật khẩu không chính xác hoặc không thể xóa tài khoản');
     } finally {
       setActionLoading(false);
     }
@@ -205,7 +183,7 @@ export default function UserProfile() {
                 type="button"
                 onClick={handleDeleteAccount}
                 disabled={actionLoading}
-                className="w-full px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
+                className="w-full px-3 py-2 bg-primary text-white text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2"
               >
                 Xóa tài khoản
               </button>
@@ -294,7 +272,7 @@ export default function UserProfile() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                  className="px-5 py-2.5 bg-primary disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-2"
                 >
                   <div className="flex items-center gap-1">
                     <Save className="w-5 h-5" />
@@ -313,53 +291,11 @@ export default function UserProfile() {
             </h3>
 
             <form onSubmit={handleChangePassword} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Mật khẩu hiện tại</label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    value={passwordData.currentPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                    required
-                    className="w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Mật khẩu mới</label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    required
-                    className="w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Xác nhận mật khẩu mới</label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                    required
-                    className="w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
               <div className="pt-2 flex justify-end">
                 <button
                   type="submit"
                   disabled={changingPassword}
-                  className="px-5 py-2.5 bg-gray-800 hover:bg-gray-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                  className="px-5 py-2.5 bg-primary disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-2"
                 >
                   <div className="flex items-center gap-1">
                     <Key className="w-5 h-5" />

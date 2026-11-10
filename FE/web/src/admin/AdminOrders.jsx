@@ -60,7 +60,7 @@ export default function AdminOrders() {
         </div>
         <button
           onClick={fetchOrders}
-          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border flex items-center gap-2 self-start text-sm"
+          className="p-2 bg-primary text-white rounded-lg transition-colors border flex items-center gap-2 self-start text-sm"
           title="Tải lại"
         >
           <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
@@ -72,7 +72,7 @@ export default function AdminOrders() {
         <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Tìm theo mã đơn, SĐT, tên người nhận, mã vận đơn…"
+            placeholder="Tìm theo mã đơn, SĐT, tên người nhận…"
             value={f.q}
             onChange={(e) => set('q', e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 text-sm"

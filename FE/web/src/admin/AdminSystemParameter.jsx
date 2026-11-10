@@ -137,7 +137,7 @@ export const AdminSystemParameter = () => {
             <button
               onClick={() => setActiveTab('params')}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'params' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                activeTab === 'params' ? 'bg-primary text-white shadow-sm' : 'text-gray-600 border border-gray-600 hover:text-gray-900'
               }`}
             >
               <div className="flex items-center gap-1">
@@ -148,7 +148,7 @@ export const AdminSystemParameter = () => {
             <button
               onClick={() => setActiveTab('logs')}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'logs' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                activeTab === 'logs' ? 'bg-primary text-white shadow-sm' : 'text-gray-600 border border-gray-600 hover:text-gray-900'
               }`}
             >
               <div className="flex items-center gap-1">
@@ -158,11 +158,7 @@ export const AdminSystemParameter = () => {
             </button>
           </div>
 
-          <button
-            onClick={activeTab === 'params' ? fetchParameters : fetchAuditLogs}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border"
-            title="Tải lại"
-          >
+          <button onClick={activeTab === 'params' ? fetchParameters : fetchAuditLogs} className="p-2 bg-primary text-white rounded-lg border" title="Tải lại">
             <RefreshCw className={`w-5 h-5 ${loading || loadingLogs ? 'animate-spin' : ''}`} />
           </button>
         </div>
