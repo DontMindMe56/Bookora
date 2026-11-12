@@ -338,7 +338,7 @@ export const AdminCustomers = () => {
                           setActionType('UNLOCK');
                           setReasonInput('');
                         }}
-                        className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-medium flex items-center gap-1"
                       >
                         Mở khóa tài khoản
                       </button>
@@ -349,7 +349,7 @@ export const AdminCustomers = () => {
                           setActionType('LOCK');
                           setReasonInput('');
                         }}
-                        className="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs font-medium flex items-center gap-1"
+                        className="px-3 py-1.5 bg-primary text-white rounded-lg text-xs font-medium flex items-center gap-1"
                       >
                         Khóa tài khoản
                       </button>
@@ -473,9 +473,7 @@ export const AdminCustomers = () => {
               <button
                 onClick={handleConfirmAccountAction}
                 disabled={loadingAction}
-                className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-                  actionType === 'LOCK' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
-                }`}
+                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium flex items-center gap-2"
               >
                 {loadingAction ? 'Đang xử lý...' : actionType === 'LOCK' ? 'Xác nhận Khóa' : 'Xác nhận Mở khóa'}
               </button>

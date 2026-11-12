@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { BookOpen, Search, Plus, Edit, CheckCircle2, AlertCircle, Save, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { BookOpen, Search, Plus, Edit, CheckCircle2, AlertCircle, Save, X, ChevronLeft, ChevronRight, ImageIcon, Upload, Trash } from 'lucide-react';
 import { api, vnd } from '../api';
 import toast from 'react-hot-toast';
 
-export default function AdminBooks() {
+export default function AdminEditions() {
   const [books, setBooks] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -12,10 +12,12 @@ export default function AdminBooks() {
 
   // State cho Modal Thêm / Sửa sách
   const [showModal, setShowModal] = useState(false);
-  const [editingBook, setEditingBook] = useState(null); // null = Thêm mới, object = Sửa
+  const [editingBook, setEditingBook] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const fileInputRef = useRef(null);
 
-  // Form state đầy đủ các trường cho cả Thêm mới & Sửa
+  // Form state
   const [formData, setFormData] = useState({
     title: '',
     isbn: '',
@@ -33,6 +35,7 @@ export default function AdminBooks() {
     publishedYear: '',
     businessStatus: 'ON_SALE',
     description: '',
+    coverImageUrl: '',
   });
 
   const fetchBooks = async () => {
@@ -72,11 +75,12 @@ export default function AdminBooks() {
       publishedYear: '',
       businessStatus: 'ON_SALE',
       description: '',
+      coverImageUrl: '',
     });
     setShowModal(true);
   };
 
-  // Mở modal sửa và đổ đầy đủ tất cả dữ liệu chi tiết của sách & ấn bản vào form
+  // Mở modal sửa và đổ dữ liệu
   const handleOpenEdit = async (workId) => {
     try {
       const detail = await api(`/api/books/${workId}`);
@@ -100,10 +104,38 @@ export default function AdminBooks() {
         publishedYear: edition.publishedYear || '',
         businessStatus: edition.businessStatus || 'ON_SALE',
         description: detail.description || '',
+        coverImageUrl: edition.coverImageUrl || detail.coverImageUrl || '',
       });
       setShowModal(true);
     } catch (err) {
       toast.error(err.message || 'Không thể tải thông tin chi tiết sách');
+    }
+  };
+
+  const handleDelete = (workId) => {};
+
+  // Hàm xử lý chọn và upload ảnh bìa
+  const handleCoverFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      toast.error('Chỉ chấp nhận tệp ảnh định dạng JPG, PNG hoặc WebP');
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+
+    setFormData((prev) => ({
+      ...prev,
+      coverImageUrl: previewUrl,
+      coverFile: file,
+    }));
+
+    toast.success('Đã chọn ảnh bìa thành công');
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -112,63 +144,66 @@ export default function AdminBooks() {
     setSubmitting(true);
 
     try {
-      if (editingBook) {
-        // Cập nhật đầy đủ thông tin ấn bản & tác phẩm
-        await api(`/api/admin/editions/${editingBook.editionId}/details`, {
+      const payload = {
+        title: formData.title,
+        isbn: formData.isbn,
+        publisher: formData.publisher,
+        authors: formData.authors
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        categories: formData.categories
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        format: formData.format,
+        listPrice: Number(formData.listPrice),
+        salePrice: formData.salePrice ? Number(formData.salePrice) : null,
+        pageCount: formData.pageCount ? Number(formData.pageCount) : null,
+        weightGram: Number(formData.weightGram || 0),
+        lengthMm: formData.lengthMm ? Number(formData.lengthMm) : null,
+        widthMm: formData.widthMm ? Number(formData.widthMm) : null,
+        heightMm: formData.heightMm ? Number(formData.heightMm) : null,
+        publishedYear: formData.publishedYear ? Number(formData.publishedYear) : null,
+        businessStatus: formData.businessStatus,
+        description: formData.description,
+      };
+
+      let currentEditionId = editingBook?.editionId;
+
+      if (currentEditionId) {
+        // --- EDIT ---
+        await api(`/api/admin/editions/${currentEditionId}/details`, {
           method: 'PATCH',
-          body: {
-            title: formData.title,
-            isbn: formData.isbn,
-            publisher: formData.publisher,
-            authors: formData.authors
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean),
-            categories: formData.categories
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean),
-            format: formData.format,
-            listPrice: Number(formData.listPrice),
-            salePrice: formData.salePrice ? Number(formData.salePrice) : null,
-            pageCount: formData.pageCount ? Number(formData.pageCount) : null,
-            weightGram: Number(formData.weightGram || 0),
-            lengthMm: formData.lengthMm ? Number(formData.lengthMm) : null,
-            widthMm: formData.widthMm ? Number(formData.widthMm) : null,
-            heightMm: formData.heightMm ? Number(formData.heightMm) : null,
-            publishedYear: formData.publishedYear ? Number(formData.publishedYear) : null,
-            businessStatus: formData.businessStatus,
-            description: formData.description,
-            reason: 'Cập nhật từ trang quản trị',
-          },
+          body: { ...payload, reason: 'Cập nhật từ trang quản trị' },
         });
         toast.success('Cập nhật chi tiết sách thành công');
       } else {
-        // Thêm mới ấn bản / tác phẩm
-        await api('/api/admin/editions', {
+        // --- CREATE ---
+        const res = await api('/api/admin/editions', {
           method: 'POST',
-          body: {
-            ...formData,
-            listPrice: Number(formData.listPrice),
-            salePrice: formData.salePrice ? Number(formData.salePrice) : null,
-            pageCount: formData.pageCount ? Number(formData.pageCount) : null,
-            weightGram: Number(formData.weightGram || 0),
-            lengthMm: formData.lengthMm ? Number(formData.lengthMm) : null,
-            widthMm: formData.widthMm ? Number(formData.widthMm) : null,
-            heightMm: formData.heightMm ? Number(formData.heightMm) : null,
-            publishedYear: formData.publishedYear ? Number(formData.publishedYear) : null,
-            authors: formData.authors
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean),
-            categories: formData.categories
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean),
-          },
+          body: payload,
         });
+        currentEditionId = res.editionId;
         toast.success('Thêm sách mới thành công');
       }
+
+      // BƯỚC 2: Có chọn file ảnh mới trong form, tiến hành gọi API upload ảnh
+      if (formData.coverFile && currentEditionId) {
+        const coverFormData = new FormData();
+        coverFormData.append('cover', formData.coverFile);
+
+        try {
+          await api(`/api/admin/editions/${currentEditionId}/cover`, {
+            method: 'POST',
+            body: coverFormData,
+          });
+          toast.success('Đã tải lên ảnh bìa thành công!');
+        } catch (coverErr) {
+          toast.error(coverErr.message || 'Lưu thông tin thành công nhưng tải ảnh bìa thất bại');
+        }
+      }
+
       setShowModal(false);
       fetchBooks();
     } catch (err) {
@@ -183,24 +218,20 @@ export default function AdminBooks() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <BookOpen className="w-6 h-6 text-blue-600" /> Quản lý danh mục sách
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">Tìm kiếm, thêm mới và cập nhật toàn diện thông tin sách</p>
+          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">Quản lý ấn bản</h1>
         </div>
         <button
           onClick={handleOpenCreate}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 shrink-0"
+          className="px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2 shrink-0"
         >
           <Plus className="w-5 h-5" />
-          <span>Thêm sách mới</span>
+          <span>Thêm mới</span>
         </button>
       </div>
 
       {/* Tìm kiếm */}
       <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center gap-3">
         <div className="relative flex-1">
-          <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={searchQuery}
@@ -208,7 +239,7 @@ export default function AdminBooks() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            placeholder="Tìm kiếm theo tên sách, tác giả, nhà xuất bản hoặc ISBN..."
+            placeholder="Tìm kiếm theo tên, tác giả, nhà xuất bản..."
             className="w-full pl-10 pr-4 py-2 border rounded-lg text-sm bg-gray-50 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
           />
         </div>
@@ -264,11 +295,16 @@ export default function AdminBooks() {
                     </td>
                     <td className="p-4 text-center">
                       <button
+                        onClick={() => handleDelete(b.workId)}
+                        className="px-1.5 py-1.5 hover:bg-red-50 text-red-600 border border-red-200 text-xs font-semibold rounded-lg transition-colors"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>{' '}
+                      <button
                         onClick={() => handleOpenEdit(b.workId)}
-                        className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 text-xs font-semibold rounded-lg transition-colors inline-flex items-center gap-1.5"
+                        className="px-1.5 py-1.5 hover:bg-blue-50 text-blue-600 border border-blue-200 text-xs font-semibold rounded-lg transition-colors"
                       >
                         <Edit className="w-4 h-4" />
-                        <span>Sửa</span>
                       </button>
                     </td>
                   </tr>
@@ -319,6 +355,32 @@ export default function AdminBooks() {
             </div>
 
             <form onSubmit={handleSubmitForm} className="space-y-4">
+              {/* Phần quản lý ảnh bìa trực tiếp trong Modal */}
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl flex items-center gap-4">
+                <div className="w-16 h-24 bg-white border border-gray-200 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                  {formData.coverImageUrl ? (
+                    <img src={formData.coverImageUrl} alt="Cover Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="w-8 h-8 text-gray-300" />
+                  )}
+                </div>
+                <div className="space-y-2 flex-1">
+                  <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Ảnh bìa ấn bản</h3>
+                  <div>
+                    <input type="file" ref={fileInputRef} onChange={handleCoverFileChange} accept="image/jpeg,image/png,image/webp" className="hidden" />
+                    <button
+                      type="button"
+                      disabled={uploadingCover}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3 py-1.5 bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 text-xs font-semibold rounded-lg shadow-sm transition-colors inline-flex items-center gap-1.5"
+                    >
+                      <Upload className={`w-4 h-4 ${uploadingCover ? 'animate-bounce' : ''}`} />
+                      <span>{uploadingCover ? 'Đang xử lý...' : 'Chọn ảnh bìa'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Tên sách / Tác phẩm</label>
@@ -525,7 +587,7 @@ export default function AdminBooks() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                  className="px-5 py-2 bg-primary disabled:bg-gray-300 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors flex items-center gap-2"
                 >
                   <Save className="w-5 h-5" />
                   <span>{submitting ? 'Đang lưu...' : editingBook ? 'Lưu thay đổi' : 'Tạo sách mới'}</span>

@@ -203,10 +203,9 @@ export default function Register() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-3 bg-primary disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 mt-2"
+          className="w-full py-3 bg-primary hover:cursor-pointer disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl shadow-sm mt-2"
         >
           <span>{submitting ? 'Đang xử lý...' : 'Đăng ký tài khoản'}</span>
-          {!submitting && <ArrowRight className="w-5 h-5" />}
         </button>
       </form>
 

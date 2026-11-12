@@ -17,7 +17,8 @@ export default function AdminLayout() {
         </button>
       </div>
       <div className="bar" style={{ borderBottom: '1px solid #e6e1d8', marginBottom: 10 }}>
-        {role === 'ADMIN' && <NavLink to="/admin/books">Sách</NavLink>}
+        {role === 'ADMIN' && <NavLink to="/admin/editions">Ấn bản</NavLink>}
+        {role === 'ADMIN' && <NavLink to="/admin/categories">Danh mục</NavLink>}
         {role === 'ADMIN' && <NavLink to="/admin/customers">Khách hàng</NavLink>}
         {role === 'ADMIN' && <NavLink to="/admin/staffs">Nhân Sự</NavLink>}
         {/* --- */}

@@ -19,9 +19,10 @@ import { AdminCustomers } from './admin/AdminCustomers';
 import AdminStaffs from './admin/AdminStaffs';
 import AdminAuditLogs from './admin/AdminAuditLogs';
 import UserProfile from './pages/UserProfile';
-import AdminBooks from './admin/AdminBooks';
 import Register from './pages/Register';
 import TermsAndPrivacy from './pages/TermsAndPrivacy';
+import AdminEditions from './admin/AdminEditions';
+import AdminCategory from './admin/AdminCategory';
 
 function Private({ children }) {
   const token = useStore((s) => s.token);
@@ -43,10 +44,7 @@ function Header() {
         <Link to="/" className="logo">
           📚 Bookora
         </Link>
-        <form onSubmit={search}>
-          <input name="q" placeholder="Tìm sách, tác giả…" />
-          <button className="btn">Tìm</button>
-        </form>
+        <div className="flex-1"></div>
         {!['STAFF', 'ADMIN'].includes(role) && (
           <Link to="/orders" className="btn ghost">
             Đơn hàng
@@ -91,7 +89,8 @@ export default function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminReports />} />
-            <Route path="books" element={<AdminBooks />} />
+            <Route path="editions" element={<AdminEditions />} />
+            <Route path="categories" element={<AdminCategory />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="staffs" element={<AdminStaffs />} />
             <Route path="orders" element={<AdminOrders />} />

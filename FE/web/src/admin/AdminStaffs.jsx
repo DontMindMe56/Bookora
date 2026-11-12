@@ -379,11 +379,7 @@ export default function AdminStaff() {
                 >
                   Hủy bỏ
                 </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors disabled:opacity-50"
-                >
+                <button type="submit" disabled={submitting} className="px-4 py-2 bg-primary text-white rounded-lg font-medium disabled:opacity-50">
                   {submitting ? 'Đang xử lý...' : editingStaff ? 'Cập nhật' : 'Tạo nhân viên'}
                 </button>
               </div>
